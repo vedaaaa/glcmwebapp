@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='stylesheet.css') }}">
+    <title>OUTPUT-PAGE</title>
+</head>
+<style>
+table, th, td {
+  border:1px solid palevioletred;
+}
+
+</style>
+<body>
+
+<form method="POST">
+    <font color="#8b0000">
+    <br> <br>   <label for="disttvall"><b>CHOOSE DISTANCE:</b></label>
+<select name="disttvall" id="disttvall">
+  <option value=1>1</option>
+  <option value=2>2</option>
+  <option value=3>3</option>
+  <option value=4>4</option>
+    </br> </br>
+</select>
+    <br> <br> <label for="disttvall"><b>CHOOSE ANGLE:</b></label>
+    <select name="anggvall" id="anggvall">
+  <option value=0>0</option>
+  <option value=45>45</option>
+  <option value=90>90</option>
+  <option value=135>135</option>
+    </br> </br>
+</select>
+    <br><br>     <input type="submit" style = "background-color: mediumaquamarine" value="FIND"></br> </br>
+    </font>
+</form>
+<div id="1" class="tabcontent">
+ <table  id="tabb" style="width:30%" >
+ <h4>DISTANCE : {{Distance  }}
+
+ </h4>
+ <h4>ANGLE: {{ Angle }} DEGREES</h4>
+     <h4><b>INPUT MATRIX:-</b></h4>
+  <tr>
+    <td></td>
+        {%- for index in range(1 ,Matrix1[0].size + 1)  %}
+     <th scope="col">{{ index }}</th>
+  {%- endfor %}
+  </tr>
+              {% for row in Matrix1 %}
+        <tr>
+         <th scope="row">{{ loop.index }}</th>
+        {% for cell in row %}
+          <td>{{ cell }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+</table>
+    <br/>
+    <table id="tabbb" style="width:30%" >
+        <b>OUTPUT GLCM:-</b>
+        <br></br>
+  <tr>
+    <td>
+        {%- for index in range(0 ,GlcmMatrix[0].size)  %}
+            </td>
+     <th scope="col">{{ index }}</th>
+  {%- endfor %}
+  </tr>
+   {% for row in GlcmMatrix %}
+        <tr>
+         <th scope="row">{{ loop.index - 1 }}</th>
+        {% for cell in row %}
+          <td>{{ cell }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+  </tr>
+</table>
+</div>
+</body>
+<script>
+
+
+
+  const tbody = document.querySelector('#tabbb tbody');
+tbody.addEventListener('click', function (e) {
+  const cell = e.target.closest('td');
+  if (!cell) {return;} 
+  const row = cell.parentElement;
+});
+
+    var table = document.getElementById('tabbb');
+    var cells = table.getElementsByTagName('td');
+    for (var i = 0; i < cells.length; i++) {
+        var cell = cells[i];
+        cell.onclick = function (e) {
+            highlight_other('tabbb',this,Math.floor(Math.random()*16777215).toString(16));
+            }
+    }
+
+
+function highlight_other(tableName,element,randomColor) {
+    var othertable = "tabb";
+    var ranggee={{ Distance }}
+    var aanngglee={{ Angle }}
+    var coluumm=(event.target.cellIndex-1).toString();
+    var rroww2=(event.target.parentNode.rowIndex-1).toString();
+    var taabb = document.getElementById(othertable);
+    var ceell2 = taabb.getElementsByTagName('td');
+    if(aanngglee===45){
+         for (var kl = 0; kl < ceell2.length; kl++){
+             var elem = ceell2[kl];
+             if(elem.innerHTML === rroww2) {
+                 var gh=kl-(ranggee)*3;
+                 console.log(kl,gh)
+                 if(gh>0 && ceell2[gh].innerHTML === coluumm){
+                     element.style.backgroundColor="#" + randomColor;
+                     elem.style.backgroundColor="#" + randomColor;
+                     console.log(event.target.parentNode.rowIndex,event.target.cellIndex)
+                     var vir=1;
+                     while(vir<=ranggee){
+                         var idc =kl-(vir)*3;
+                         ceell2[idc].style.backgroundColor = "#" + randomColor;
+                         vir++;
+                     }
+                 }
+             }
+         }
+    }
+    if(aanngglee===0) {
+        for (var vv = 0; vv < ceell2.length; vv++) {
+            var sdf = ceell2[vv];
+            var xdf = vv - ranggee;
+            if (sdf.innerHTML === rroww2) {
+                console.log(sdf.innerHTML,rroww2);
+                if ((vv - ranggee)>0&&ceell2[vv - ranggee].innerHTML === coluumm) {
+                    element.style.backgroundColor = "#" + randomColor;
+                    sdf.style.backgroundColor = "#" + randomColor;
+                    console.log(event.target.parentNode.rowIndex, event.target.cellIndex);
+                    while (xdf < vv) {
+                        ceell2[xdf].style.backgroundColor = "#" + randomColor;
+                        xdf++;
+                    }
+                }
+            }
+        }
+    }
+    if(aanngglee===135){
+        var ttrr=document.getElementById("tabb").rows;
+        for (var joi = 0; joi < ttrr.length; joi++) {
+            var erff=ttrr[joi].cells
+            for(var zy=ranggee; zy<erff.length; zy++){
+                var khgh=erff[zy];
+                if(khgh.innerHTML === rroww2 && joi>ranggee){
+                    console.log(joi,zy);
+                    var liuy=ttrr[joi-ranggee].cells[zy-ranggee];
+                    if(liuy.innerHTML ===coluumm && (zy-ranggee)>0){
+                        liuy.style.backgroundColor = "#" + randomColor;
+                        khgh.style.backgroundColor = "#" + randomColor;
+                        var vre=ranggee;
+                        while(vre>1){
+                            itrCell=ttrr[joi+vre].cells[zy+vre];
+                            itrCell.style.backgroundColor = "#" + randomColor;
+                            console.log(liuy,joi,zy,coluumm)
+                            vre--;
+                        }
+                    }
+
+
+                }
+            }
+        }
+    }
+if(aanngglee===90){
+        var ttrr=document.getElementById("tabb").rows;
+        for (var hh2 = ranggee+1; hh2 < ttrr.length; hh2++) {
+            var carrr=ttrr[hh2].cells
+            for(var pa=1;pa<carrr.length;pa++){
+                var qwert=carrr[pa];
+                if(qwert.innerHTML === rroww2){
+                    console.log(hh2,pa);
+                    var     nneew=ttrr[hh2-ranggee].cells[pa];
+                    if(nneew.innerHTML ===coluumm && pa>0){
+                        nneew.style.backgroundColor = "#" + randomColor;
+                        qwert.style.backgroundColor = "#" + randomColor;
+                        var uuu=1;
+                        while(uuu<ranggee){
+                            itrCell=ttrr[hh2-uuu].cells[pa];
+                            itrCell.style.backgroundColor = "#" + randomColor;
+                            console.log(nneew,hh2,pa,coluumm)
+                            uuu++;
+                        }
+                    }
+
+
+                }
+            }
+        }
+    }
+
+}
+
+</script>
+</html>
